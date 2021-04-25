@@ -15,6 +15,17 @@
 	<description>Roadmap Java project</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.coverage.exclusions>
+			**/dto/**,
+			**/model/**,
+			**/exception/**,
+			**/repository/**,
+			**/configuration/**,
+			**/DocumentManagementApplication.java
+		</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>
+			**/model/**
+		</sonar.cpd.exclusions>
 	</properties>
 	<dependencies>
 		<dependency>

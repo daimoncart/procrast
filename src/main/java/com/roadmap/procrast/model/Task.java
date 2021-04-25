@@ -13,11 +13,10 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Data
-@SequenceGenerator(name="seq", initialValue=7, allocationSize=200)
+@SequenceGenerator(name="seq", initialValue=8, allocationSize=200)
 public class Task {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq")
-    @Setter(AccessLevel.NONE)
     private long id;
 
     @Column(nullable=false, length=50)

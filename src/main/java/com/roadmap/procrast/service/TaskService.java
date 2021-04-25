@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -36,19 +35,24 @@ public class TaskService {
 //        return taskOptional.get();
 //    }
 
-    public Task save(TaskDTO taskDTO) {
+    public TaskDTO save(TaskDTO taskDTO) {
         validateTaskFieldLen(taskDTO);
-        return taskRepository.save(this.fromDto(taskDTO));
+        Task task = taskRepository.save(this.fromDto(taskDTO));
+        return this.toDto(task);
     }
 
     public void deleteById(Long id) throws TaskNotFoundException {
+        validateTaskById(id);
         taskRepository.deleteById(id);
     }
 
-    public TaskDTO updateTask(Long id, TaskDTO taskDTO){
+    public TaskDTO updateTask(Long id, TaskDTO taskDTO) throws IncorrectTaskParameterException {
         validateTaskById(id);
         validateTaskFieldLen(taskDTO);
-        Task task = taskRepository.updateById(id, this.fromDto(taskDTO));
+        if (id != taskDTO.getId()){
+            throw new IncorrectTaskParameterException("Ids do not match!");
+        }
+        Task task = taskRepository.save(this.fromDto(taskDTO));
         return this.toDto(task);
     }
 
@@ -62,7 +66,7 @@ public class TaskService {
         return mapper.map(taskDTO, Task.class);
     }
 
-    private void validateTaskFieldLen(TaskDTO taskDTO) {
+    private void validateTaskFieldLen(TaskDTO taskDTO) throws IncorrectTaskParameterException {
         int taskNameLen = taskDTO.getName().length();
         int taskDescriptionLen = taskDTO.getDescription().length();
         if (taskNameLen <3 || taskNameLen > 50) {
@@ -73,7 +77,7 @@ public class TaskService {
         }
     }
 
-    private void validateTaskById(Long id) {
+    private void validateTaskById(Long id) throws TaskNotFoundException {
         if (!taskRepository.findById(id).isPresent()){
             throw new TaskNotFoundException("Task not found.");
         }
