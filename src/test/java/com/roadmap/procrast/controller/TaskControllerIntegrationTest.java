@@ -1,9 +1,5 @@
 package com.roadmap.procrast.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.Gson;
 import com.roadmap.procrast.model.Task;
 import com.roadmap.procrast.model.TaskDTO;
@@ -11,15 +7,10 @@ import com.roadmap.procrast.repository.TaskRepository;
 import com.roadmap.procrast.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.gson.GsonBuilderCustomizer;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,17 +18,18 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.util.Collections;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TaskControllerIntegrationTest {
+class TaskControllerIntegrationTest {
     private Task task;
     private TaskDTO taskDTO;
 
@@ -53,10 +45,6 @@ public class TaskControllerIntegrationTest {
 
     @MockBean
     private TaskRepository repository;
-
-    // This object will be initialized thanks to @AutoConfigureJsonTesters
-//    @Autowired
-//    private JacksonTester<Task> jsonTask;
 
     @BeforeEach
     private void prepareTask(){
@@ -77,12 +65,12 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    public void contextLoads() throws Exception {
+    void contextLoads() throws Exception {
         assertThat(controller).isNotNull();
     }
 
     @Test
-    public void getAllTasksAndExpectOK() throws Exception {
+    void getAllTasksAndExpectOK() throws Exception {
         given(repository.findAll())
             .willReturn(Collections.singletonList(task));
 
@@ -100,7 +88,7 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    public void createNewTaskAndExpectOK() throws Exception {
+    void createNewTaskAndExpectOK() throws Exception {
         given(repository.save(Mockito.any(Task.class)))
             .willReturn(task);
 
@@ -120,7 +108,7 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    public void updateTaskAndExpectError() throws Exception {
+    void updateTaskAndExpectError() throws Exception {
         given(repository.save(task))
             .willReturn(task);
         given(repository.findById(6L))
@@ -137,7 +125,7 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    public void updateTaskAndExpectOK() throws Exception {
+    void updateTaskAndExpectOK() throws Exception {
         given(repository.save(Mockito.any(Task.class)))
             .willReturn(task);
         given(repository.findById(2L))
@@ -160,7 +148,7 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    public void deleteTaskAndExpectError() throws Exception {
+    void deleteTaskAndExpectError() throws Exception {
 
         given(repository.findById(12L))
             .willReturn(Optional.empty());

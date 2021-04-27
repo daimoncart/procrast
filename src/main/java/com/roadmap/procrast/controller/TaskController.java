@@ -1,12 +1,10 @@
 package com.roadmap.procrast.controller;
 
-import com.roadmap.procrast.exception.IncorrectTaskParameterException;
 import com.roadmap.procrast.model.TaskDTO;
 import com.roadmap.procrast.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,12 +25,12 @@ public class TaskController {
     }
 
     @PostMapping("/tasks")
-    TaskDTO newTask(@RequestBody TaskDTO taskDTO) {
+    public TaskDTO newTask(@RequestBody TaskDTO taskDTO) {
         return taskService.save(taskDTO);
     }
 
     @PutMapping("/tasks/{id}")
-    TaskDTO updateTask(@RequestBody TaskDTO taskDTO, @PathVariable Long id){
+    public TaskDTO updateTask(@RequestBody TaskDTO taskDTO, @PathVariable Long id){
         return taskService.updateTask(id, taskDTO);
     }
 

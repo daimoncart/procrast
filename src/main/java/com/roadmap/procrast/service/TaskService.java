@@ -27,17 +27,9 @@ public class TaskService {
             .collect(Collectors.toList());
     }
 
-//    public Task findById(Long id) {
-//        Optional<Task> taskOptional = taskRepository.findById(id);
-//        if (!taskOptional.isPresent()) {
-//            throw new TaskNotFoundException("Task not found");
-//        }
-//        return taskOptional.get();
-//    }
-
     public TaskDTO save(TaskDTO taskDTO) {
         validateTaskFieldLen(taskDTO);
-        Task task = taskRepository.save(this.fromDto(taskDTO));
+        var task = taskRepository.save(this.fromDto(taskDTO));
         return this.toDto(task);
     }
 
@@ -52,12 +44,12 @@ public class TaskService {
         if (id != taskDTO.getId()){
             throw new IncorrectTaskParameterException("Ids do not match!");
         }
-        Task task = taskRepository.save(this.fromDto(taskDTO));
+        var task = taskRepository.save(this.fromDto(taskDTO));
         return this.toDto(task);
     }
 
     private TaskDTO toDto(Task task){
-        TaskDTO taskDTO = mapper.map(task, TaskDTO.class);
+        var taskDTO = mapper.map(task, TaskDTO.class);
         taskDTO.setRandomPriority(new Random().nextInt(3)+1);
         return taskDTO;
     }
