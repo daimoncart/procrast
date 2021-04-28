@@ -23,7 +23,7 @@ public class TaskService {
 
     public List<TaskDTO> getTasks() {
         return taskRepository.findAll().stream()
-            .map(t -> this.toDto(t))
+            .map(this::toDto)
             .collect(Collectors.toList());
     }
 
@@ -33,12 +33,12 @@ public class TaskService {
         return this.toDto(task);
     }
 
-    public void deleteById(Long id) throws TaskNotFoundException {
+    public void deleteById(Long id) {
         validateTaskById(id);
         taskRepository.deleteById(id);
     }
 
-    public TaskDTO updateTask(Long id, TaskDTO taskDTO) throws IncorrectTaskParameterException {
+    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
         validateTaskById(id);
         validateTaskFieldLen(taskDTO);
         if (id != taskDTO.getId()){
@@ -58,7 +58,7 @@ public class TaskService {
         return mapper.map(taskDTO, Task.class);
     }
 
-    private void validateTaskFieldLen(TaskDTO taskDTO) throws IncorrectTaskParameterException {
+    private void validateTaskFieldLen(TaskDTO taskDTO) {
         int taskNameLen = taskDTO.getName().length();
         int taskDescriptionLen = taskDTO.getDescription().length();
         if (taskNameLen <3 || taskNameLen > 50) {
@@ -69,7 +69,7 @@ public class TaskService {
         }
     }
 
-    private void validateTaskById(Long id) throws TaskNotFoundException {
+    private void validateTaskById(Long id) {
         if (!taskRepository.findById(id).isPresent()){
             throw new TaskNotFoundException("Task not found.");
         }
