@@ -65,7 +65,7 @@ class TaskControllerIntegrationTest {
     }
 
     @Test
-    void contextLoads() throws Exception {
+    void contextLoads() {
         assertThat(controller).isNotNull();
     }
 
@@ -85,6 +85,23 @@ class TaskControllerIntegrationTest {
         assertThat(responseString.substring(0, responseString.length() - 3)).isEqualTo(
             "[{\"id\":2,\"name\":\"Name001\",\"description\":\"Description0001\",\"worth\":2,\"randomPriority\":"
         );
+    }
+
+    @Test
+    void getSpecificTaskAndExpectOK() throws Exception {
+        given(repository.findById(2L))
+            .willReturn(Optional.of(task));
+
+        MockHttpServletResponse response = mvc.perform(
+            get("/tasks/2")
+                .accept(MediaType.APPLICATION_JSON))
+            .andReturn().getResponse();
+
+        String responseString = response.getContentAsString();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseString.substring(0, responseString.length() - 2)).isEqualTo(
+            "{\"id\":2,\"name\":\"Name001\",\"description\":\"Description0001\",\"worth\":2,\"randomPriority\":");
     }
 
     @Test

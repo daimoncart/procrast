@@ -26,6 +26,9 @@ public class TaskController {
         return taskService.getTasks();
     }
 
+    @GetMapping(path="/tasks/{id}")
+    public TaskDTO findTask(@PathVariable Long id) { return taskService.findById(id); }
+
     @PostMapping("/tasks")
     public TaskDTO newTask(@RequestBody TaskDTO taskDTO) {
         return taskService.save(taskDTO);
@@ -40,5 +43,4 @@ public class TaskController {
     public void deleteById(@PathVariable Long id) {
         taskService.deleteById(id);
     }
-
 }
