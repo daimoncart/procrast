@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class TaskService {
 
     public TaskDTO findById(Long id) {
         validateTaskById(id);
-        return this.toDto(taskRepository.findById(id).get());
+        return this.toDto(taskRepository.findById(id).get()); // Not a bug since id is validated already.
     }
 
     public TaskDTO save(TaskDTO taskDTO) {

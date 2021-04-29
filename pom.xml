@@ -126,6 +126,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<finalName>procrast-docker-jenkins-integration</finalName>
 	</build>
 
 </project>
