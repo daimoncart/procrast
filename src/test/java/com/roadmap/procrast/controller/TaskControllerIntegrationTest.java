@@ -147,23 +147,6 @@ class TaskControllerIntegrationTest {
     }
 
     @Test
-    void updateTaskAndExpectError() throws Exception {
-        given(repository.save(task))
-            .willReturn(task);
-        given(repository.findById(6L))
-            .willReturn(Optional.of(task));
-
-        MockHttpServletResponse response = mvc.perform(
-            put("/tasks/6")
-                .content(new Gson().toJson(taskDTO))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-            .andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_ACCEPTABLE.value());
-    }
-
-    @Test
     void updateTaskAndExpectOK() throws Exception {
         given(repository.save(Mockito.any(Task.class)))
             .willReturn(task);
@@ -184,22 +167,6 @@ class TaskControllerIntegrationTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(gson.toJson(newDTO))
             .isEqualTo(gson.toJson(taskDTO));
-    }
-
-    @Test
-    void deleteTaskAndExpectError() throws Exception {
-
-        given(repository.findById(12L))
-            .willReturn(Optional.empty());
-
-        MockHttpServletResponse response = mvc.perform(
-            delete("/tasks/12")
-                .accept(MediaType.APPLICATION_JSON))
-            .andReturn().getResponse();
-
-        String responseString = response.getContentAsString();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
 }

@@ -1,6 +1,5 @@
 package com.roadmap.procrast.model;
 
-import com.google.gson.annotations.Expose;
 import lombok.Data;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
