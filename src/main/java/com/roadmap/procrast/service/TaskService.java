@@ -33,8 +33,8 @@ public class TaskService {
     }
 
     public TaskDTO save(TaskDTO taskDTO) {
-        var task = taskRepository.save(this.fromDto(taskDTO));
-        return this.toDto(task);
+        var taskOut = taskRepository.save(this.fromDto(taskDTO));
+        return this.toDto(taskOut);
     }
 
     public void deleteById(Long id) {
