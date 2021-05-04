@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -26,5 +28,7 @@ public class Task {
     private String description;
 
     @Column(nullable=false)
+    @Min(1)
+    @Max(13)
     private int worth;
 }

@@ -1,6 +1,10 @@
 package com.roadmap.procrast.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.roadmap.procrast.model.Task;
 import com.roadmap.procrast.model.TaskDTO;
 import com.roadmap.procrast.repository.TaskRepository;
@@ -18,6 +22,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.io.DataInput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +39,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class TaskControllerIntegrationTest {
     private Task task;
     private TaskDTO taskDTO;
+    private Gson gson;
+    private ObjectMapper mapper;
+
 
     @Autowired
     private TaskController controller;
@@ -62,11 +72,20 @@ class TaskControllerIntegrationTest {
         taskDTO.setDescription("Description0001");
         taskDTO.setWorth(2);
         taskDTO.setRandomPriority(3);
-    }
 
-    @Test
-    void contextLoads() {
-        assertThat(controller).isNotNull();
+        ExclusionStrategy strategy = new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+
+            @Override
+            public boolean shouldSkipField(FieldAttributes field) {
+                return field.getName().startsWith("randomPriority");
+            }
+        };
+        gson = new GsonBuilder().setExclusionStrategies(strategy).create();
+        mapper = new ObjectMapper();
     }
 
     @Test
@@ -80,10 +99,12 @@ class TaskControllerIntegrationTest {
             .andReturn().getResponse();
 
         String responseString = response.getContentAsString();
+        ArrayList<TaskDTO> list = mapper.readValue(responseString, ArrayList.class);
+        TaskDTO newDTO = mapper.convertValue(list.get(0), TaskDTO.class);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseString.substring(0, responseString.length() - 3)).isEqualTo(
-            "[{\"id\":2,\"name\":\"Name001\",\"description\":\"Description0001\",\"worth\":2,\"randomPriority\":"
+        assertThat(gson.toJson(newDTO)).isEqualTo(
+            gson.toJson(task)
         );
     }
 
@@ -98,10 +119,11 @@ class TaskControllerIntegrationTest {
             .andReturn().getResponse();
 
         String responseString = response.getContentAsString();
+        TaskDTO newDTO = mapper.readValue(responseString, TaskDTO.class);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseString.substring(0, responseString.length() - 2)).isEqualTo(
-            "{\"id\":2,\"name\":\"Name001\",\"description\":\"Description0001\",\"worth\":2,\"randomPriority\":");
+        assertThat(gson.toJson(newDTO))
+            .isEqualTo(gson.toJson(taskDTO));
     }
 
     @Test
@@ -117,11 +139,11 @@ class TaskControllerIntegrationTest {
                 .andReturn().getResponse();
 
         String responseString = response.getContentAsString();
+        TaskDTO newDTO = mapper.readValue(responseString, TaskDTO.class);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseString.substring(0, responseString.length() - 2)).isEqualTo(
-            "{\"id\":2,\"name\":\"Name001\",\"description\":\"Description0001\",\"worth\":2,\"randomPriority\":"
-        );
+        assertThat(gson.toJson(newDTO))
+            .isEqualTo(gson.toJson(taskDTO));
     }
 
     @Test
@@ -149,7 +171,7 @@ class TaskControllerIntegrationTest {
             .willReturn(Optional.of(task));
 
         MockHttpServletResponse response = mvc.perform(
-            put("/tasks/2")
+            put("/tasks")
                 .content(new Gson().toJson(taskDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -157,11 +179,11 @@ class TaskControllerIntegrationTest {
 
 
         String responseString = response.getContentAsString();
+        TaskDTO newDTO = mapper.readValue(responseString, TaskDTO.class);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseString.substring(0, responseString.length() - 2)).isEqualTo(
-            "{\"id\":2,\"name\":\"Name001\",\"description\":\"Description0001\",\"worth\":2,\"randomPriority\":"
-        );
+        assertThat(gson.toJson(newDTO))
+            .isEqualTo(gson.toJson(taskDTO));
     }
 
     @Test
